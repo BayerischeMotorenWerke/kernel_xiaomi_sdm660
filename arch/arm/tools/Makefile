@@ -6,31 +6,17 @@
 
 gen := arch/$(ARCH)/include/generated
 kapi := $(gen)/asm
-uapi := $(gen)/uapi/asm
-syshdr := $(srctree)/$(src)/syscallhdr.sh
-sysnr := $(srctree)/$(src)/syscallnr.sh
-systbl := $(srctree)/$(src)/syscalltbl.sh
-syscall := $(srctree)/$(src)/syscall.tbl
 
-gen-y := $(gen)/calls-oabi.S
-gen-y += $(gen)/calls-eabi.S
-kapi-hdrs-y := $(kapi)/unistd-nr.h
-kapi-hdrs-y += $(kapi)/mach-types.h
-uapi-hdrs-y := $(uapi)/unistd-common.h
-uapi-hdrs-y += $(uapi)/unistd-oabi.h
-uapi-hdrs-y += $(uapi)/unistd-eabi.h
+kapi-hdrs-y := $(kapi)/mach-types.h
 
-targets += $(addprefix ../../../,$(gen-y) $(kapi-hdrs-y) $(uapi-hdrs-y))
+targets += $(addprefix ../../../,$(kapi-hdrs-y))
 
-PHONY += kapi uapi
+PHONY += kapi
 
-kapi:	$(kapi-hdrs-y) $(gen-y)
-
-uapi:	$(uapi-hdrs-y)
+kapi:	$(kapi-hdrs-y)
 
 # Create output directory if not already present
-_dummy := $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)') \
-          $(shell [ -d '$(uapi)' ] || mkdir -p '$(uapi)')
+_dummy := $(shell [ -d '$(kapi)' ] || mkdir -p '$(kapi)')
 
 $(kapi)/mach-types.h: $(src)/gen-mach-types $(src)/mach-types
 	@$(kecho) '  Generating $@'
